@@ -1,5 +1,6 @@
 body {
     font-family: sans-serif;
+    color: hsl(0, 0%, 15%);
 }
 
 #app {
@@ -16,8 +17,13 @@ ul {
     padding: 0;
 }
 
-li {
-    padding: 4px 0;
+li:not(:first-child):before {
+    content: "";
+    display: block;
+    height: 1px;
+    width: 100%;
+    margin: 10px 0;
+    background: hsl(0, 0%, 80%);
 }
 
 button {
@@ -28,4 +34,8 @@ button {
     border-color: hsl(0, 0%, 60%);
     border-radius: 3px;
     text-transform: uppercase;
+}
+
+.full {
+    color: hsl(2, 90%, 45%);
 }

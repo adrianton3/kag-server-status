@@ -82,8 +82,9 @@
       [:li
        [:div
         (:serverName status)]
-       [:div
-        "players " (:currentPlayers status) "/" (:maxPlayers status)]])]
+       [:div.players
+        {:class (if (= (:currentPlayers status) (:maxPlayers status)) "full" nil)}
+        (:currentPlayers status) "/" (:maxPlayers status)]])]
    [:button
     {:on-click
      #(when
