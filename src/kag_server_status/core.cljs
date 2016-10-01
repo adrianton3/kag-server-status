@@ -101,13 +101,20 @@
        (request-status)
        (tick))
      :disabled (pos? @timer)}
-    "Refresh"
-    (if (zero? @timer) "" (str " in " @timer " seconds"))]])
+    (if
+      (zero? @timer)
+      "refresh"
+      (str "cooling down in " @timer " seconds"))]])
 
 
 (defn render []
   (r/render-component [server-list]
                       (.getElementById js/document "app")))
+
+
+(reset! timer 30)
+(request-status)
+(tick)
 
 
 (render)
