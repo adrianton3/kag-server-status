@@ -2,6 +2,7 @@
   (:require-macros [cljs.core.async.macros :refer [go]])
   (:require [cljs.core.async :refer [<!]]
             [reagent.core :as r]
+            [kag-server-status.time :as time]
             [kag-server-status.http-utils :refer [make-generic-requester]]))
 
 
@@ -16,6 +17,12 @@
 
 (defn populated? [server]
   (pos? (:currentPlayers server)))
+
+
+(defn recent? [server]
+  (time/fresh?
+    (* 8 60 60 1000)
+    (time/string->timestamp (:lastUpdate server))))
 
 
 (def state (r/atom (hash-map)))
@@ -44,6 +51,7 @@
       (let [filtered
             (->> (:serverList servers)
                  (filter official?)
+                 (filter recent?)
                  (filter populated?)
                  (map #(select-keys
                         %
