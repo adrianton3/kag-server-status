@@ -27,6 +27,8 @@
 
 (def state (r/atom (hash-map)))
 (def timer (r/atom 0))
+(def candidates (r/atom 0))
+(def pinged (r/atom 0))
 
 
 (def get-servers-unbound
@@ -46,6 +48,7 @@
 
 (defn request-status []
   (reset! state {})
+  (reset! pinged 0)
   (get-servers
     (fn [servers]
       (let [filtered
@@ -56,6 +59,7 @@
                  (map #(select-keys
                         %
                         [:serverName :currentPlayers :serverIPv4Address :serverPort])))]
+        (reset! candidates (count filtered))
         (doseq [server filtered]
           (get-status
             #(when
@@ -65,7 +69,8 @@
                 (assoc
                   @state
                   (-> % :serverStatus :serverName)
-                  (-> % :serverStatus))))
+                  (-> % :serverStatus)))
+              (swap! pinged inc))
             (str
               "https://api.kag2d.com/server/ip/"
               (:serverIPv4Address server)
@@ -101,10 +106,11 @@
        (request-status)
        (tick))
      :disabled (pos? @timer)}
-    (if
-      (zero? @timer)
-      "refresh"
-      (str "cooling down in " @timer " seconds"))]])
+    (cond
+      (< @pinged @candidates) (str "pinged " @pinged " / " @candidates)
+      (pos? @timer) (str "cooling down in " @timer " seconds")
+      :else "refresh")
+    ]])
 
 
 (defn render []
