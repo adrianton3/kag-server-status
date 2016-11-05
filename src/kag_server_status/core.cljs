@@ -27,7 +27,7 @@
 
 (def state (r/atom (hash-map)))
 (def timer (r/atom 0))
-(def candidates (r/atom 0))
+(def candidates (r/atom nil))
 (def pinged (r/atom 0))
 
 
@@ -48,6 +48,7 @@
 
 (defn request-status []
   (reset! state {})
+  (reset! candidates nil)
   (reset! pinged 0)
   (get-servers
     (fn [servers]
@@ -107,6 +108,7 @@
        (tick))
      :disabled (pos? @timer)}
     (cond
+      (nil? @candidates) "fetching server list"
       (< @pinged @candidates) (str "pinged " @pinged " / " @candidates)
       (pos? @timer) (str "cooling down in " @timer " seconds")
       :else "refresh")
