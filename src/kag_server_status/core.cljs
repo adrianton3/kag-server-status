@@ -97,7 +97,7 @@
        [:div
         (:serverName status)]
        [:div.players
-        {:class (if (= (:currentPlayers status) (:maxPlayers status)) "full" nil)}
+        {:class (if (>= (:currentPlayers status) (:maxPlayers status)) "full" nil)}
         (:currentPlayers status) "/" (:maxPlayers status)]])]
    [:button
     {:on-click
