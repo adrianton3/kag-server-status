@@ -10,9 +10,11 @@
 
 
 (defn official? [server]
-  (some
-    #(.includes (:serverName server) %)
-    ["KAG Official"]))
+  (and
+    (not (nil? (:serverName server)))
+    (some
+      #(.includes (:serverName server) %)
+      ["KAG Official"])))
 
 
 (defn populated? [server]
